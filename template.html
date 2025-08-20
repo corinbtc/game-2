@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Playground</title>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        body {
+            background-color: #3ee3eb;
+        }
+
+        #app {
+            max-width: 360px;
+            margin: 0 auto;
+
+        }
+
+        .nav {
+            height: 60px;
+            background-color: #746DFF;
+            text-align: center;
+            position: relative;
+        }
+
+        .main {
+            max-width: 340px;
+            margin: 10px auto;
+        }
+
+        .game {
+            display: flex;
+        }
+
+        .game dl {
+            margin-left: 10px;
+        }
+
+        .game dd {
+            padding: 5px;
+        }
+
+        .play {
+            text-align: center;
+            background-color: #f45131;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .ad_top,
+        .ad_bottom {
+            width: 100%;
+            text-align: center;
+            /* height: 300px; */
+            margin: 10px auto;
+            /* background-color: #fff; */
+        }
+
+        .ad_top>div,
+        .ad_bottom>div {
+            margin: 0 auto;
+        }
+
+        .ad_top>div>div,
+        .ad_bottom>div>div {
+            margin: 0 auto;
+        }
+
+        .desc {
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        .desc h2 {
+            color: #212121;
+            font-size: 20px;
+        }
+
+        .may {
+            max-width: 340px;
+            margin: 50px auto;
+        }
+
+        .mayLike {
+            display: flex;
+            position: relative;
+            margin: 10px auto;
+        }
+
+        .mayLike dt {
+            position: absolute;
+            right: 10px;
+            /* top: 30%; */
+            background-color: #f45131;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: #fff;
+            top: 17px;
+        }
+
+        .may dd {
+            padding: 15px;
+            padding-bottom: 0;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="nav" @click='back'>
+            <img style="position: absolute;left: 10px;top: 15px;" width="30" src="./img/home.webp" alt="">
+            <h3 style="line-height: 60px;">{{gameList.gameName}}</h3>
+        </div>
+        <div class="ad_top" ref="poster" v-html="poster">
+            <!-- <span>ADVERTISEMENT</span> -->
+        </div>
+        <div class="main">
+            <div></div>
+            <div></div>
+            <div class="game">
+                <img :src="gameList.gameLogo" style="border-radius: 10px;" width="120" alt="">
+                <!-- <img width="120" style="border-radius: 10px;"
+                    src="https://www.ohplaygames.com/thumbs/pirate-cards-ows.jpeg"> -->
+                <dl>
+                    <dd style="font-weight: 600;font-size: 18px;">{{gameList.gameName}}</dd>
+                    <dd><span class="gameType"
+                            style="color:#f45131;border: 1px solid #f45131;border-radius: 5px;padding: 5px;">{{typeList.gameTypeName}}</span>
+                    </dd>
+                    <dd class="p" style="color: #9d9d9d;"><span
+                            style="color: #f99d00;">{{number(gameList.gamePlayNumber)}}+</span> likes</dd>
+                </dl>
+            </div>
+            <div class="play" @click='Play(gameList.gameFileName,gameId)'>PLAY</div>
+        </div>
+
+        <div class="desc">
+            <h2>Describe</h2>
+            <p style="color: #757575;font-size: 14px;line-height: 1.5;text-align: justify;">{{gameList.gameDesc}}</p>
+        </div>
+        <div class="ad_bottom" v-html="poster4" ref="topAd">
+            <!-- <span>ADVERTISEMENT</span> -->
+
+        </div>
+        <div class="may">
+            <h3>You may like it.</h3>
+            <div class="mayLike" v-for='(list,index) in mayLike' :key='index' @click='Like(list.gameId)'>
+                <img :src="list.gameLogo" style="border-radius: 10px;" width="80" alt="">
+                <!-- <img style="border-radius: 10px;" width="80"
+                    src="https://www.ohplaygames.com/thumbs/pirate-cards-ows.jpeg" alt=""> -->
+                <dl>
+                    <dt>Play</dt>
+                    <dd style="font-weight: 500;">{{list.gameName}}</dd>
+                    <dd class="p" style="color: #9d9d9d;">
+                        <span style="color: #f99d00;">{{number(list.gamePlayNumber)}}+</span> likes
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div ref='ga'></div>
+    </div>
+
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/adManager.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                gameList: {},
+                typeList: { gameTypeName: 'New' },
+                mayLike: [],
+                gameChannelId: 1816,
+                gameId: 820,
+                poster: "",
+                poster2: "",
+                poster3: "",
+                poster4: "",
+                poster5: "",
+                poster6: "",
+            },
+            methods: {
+                getGame() {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/tempGameDetails',
+                        data: {
+                            gameWebsiteName: "www.92onegame.com",
+                            gameId: this.gameId,
+                            gameChannelId: this.gameChannelId
+                        }
+                    }).then((res) => {
+                        console.log(res);
+                        // console.log(res.data.data);
+                        this.gameList = res.data.data
+                        this.typeList = res.data.data.gameTypeList[0]
+                        this.mayLike = res.data.data.gameListIndexVos
+                        console.log(this.mayLike);
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                },
+                number(num) {
+                    num = num * 1;
+                    return num >= 1e3 ? (num / 1e3).toFixed(1) + "k" : num >= 1e4;
+                },
+                back() {
+                    location.href = `index.html?gameChannelId=${this.gameChannelId}`
+
+                },
+                getQueryVariable(variable) {
+                    var query = window.location.search.substring(1);
+                    var vars = query.split("&");
+                    for (var i = 0; i < vars.length; i++) {
+                        var pair = vars[i].split("=");
+                        if (pair[0] == variable) {
+                            return pair[1];
+                        }
+                    }
+                    return (false);
+                },
+                Like(gameId) {
+                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${gameId}`
+
+                },
+                Play(gameFileName, gameId) {
+                    location.href = `play.html?gameChannelId=${this.gameChannelId}&gameFileName=${gameFileName}&gameId=${gameId}`
+
+                },
+                getPoster() {
+                    // 使用广告管理模块插入广告
+                    AdManager.insertAd(this.$refs.poster, 'top');
+                    AdManager.insertAd(this.$refs.topAd, 'bottom');
+                },
+                GA() {
+
+                    if (this.gameChannelId * 1 === 1816) {
+                        var GA = 'UA-172839421-29';
+                    }
+                    else if (this.gameChannelId * 1 === 1826) {
+                        var GA = 'UA-172839421-32'
+                    }
+                    else if(this.gameChannelId*1 === 2001){
+                        var GA = 'UA-172839421-57'
+                    }
+                    else {
+                        console.log(this.gameChannelId, 'else -66')
+                        var GA = 'UA-147411722-58';
+                    }
+                    var ele = document.createElement("script");
+                    ele.defer = 'defer'
+                    ele.src = `https://www.googletagmanager.com/gtag/js?id=${GA}`
+                    this.$refs.ga.append(ele);
+                    var ele2 = document.createElement("script");
+                    ele2.innerHTML = `window.dataLayer = window.dataLayer || [];
+                  function gtag() {
+                  dataLayer.push(arguments);
+                                           }
+                  gtag('js', new Date());
+                  gtag('config', '${GA}');`;
+                    this.$refs.ga.append(ele2);
+                }
+
+            },
+            mounted() {
+
+                if (this.getQueryVariable('gameId') !== false) {
+                    this.gameId = this.getQueryVariable('gameId') * 1
+                }
+                if (this.getQueryVariable('gameChannelId') !== false) {
+                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                }
+                this.getPoster()
+                this.getGame()
+                this.GA()
+            }
+        })
+    </script>
+
+</body>
+
+</html>

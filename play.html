@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Playground</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* #app {
+            max-width: 360px;
+            margin: 0 auto;
+        } */
+
+        .mask {
+            width: 100%;
+            /* width: 360px; */
+            height: 100vh;
+            margin: 0 auto;
+            background-color: #000;
+            position: fixed;
+            /* display: none; */
+            z-index: 3000;
+        }
+
+        .ad_center {
+            margin: 0 auto;
+            min-height: 250px;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #fff;
+        }
+
+        .play {
+            width: 80px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 10px;
+            text-align: center;
+            background-color: gray;
+            color: #fff;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .time {
+            color: #fff;
+            text-align: right;
+            margin-top: 60px;
+        }
+
+        .ad_banner {
+            text-align: center;
+        }
+
+        .ad_banner>div {
+            margin: 0 auto;
+        }
+
+        .ad_banner>div>div {
+            margin: 0 auto;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="mask" v-show='mask'>
+            <div class="ad_center" ref="poster" v-html="poster">
+
+            </div>
+            <div>
+                <div class="play" ref='down' @click='close'>play</div>
+            </div>
+            <div>
+                <div class="time" v-show="show">You can skip this ad in {{totalTime}}</div>
+            </div>
+            <div>
+                <div class="time" v-show="show2">Ad will close in 0:0{{ totalTime2 }}</div>
+            </div>
+        </div>
+        <div class="nav" style="height: 10vh;background-color: #eee;position: relative;" @click='back'>
+            <div style="position: absolute;top: 15px;left: 10px;">
+                <img width="30" src="./img/home.webp" alt="">
+            </div>
+            <div style="text-align: center;height: 10vh;line-height: 10vh;;">{{gameFileName}}</div>
+        </div>
+
+        <div style="height: 80vh;">
+            <iframe class="game" :src="`https://www.datinginfo.top/game/${gameFileName}/`" frameborder="0" width="100%"
+                height="100%"></iframe>
+        </div>
+        <div class="ad_banner" style="height: 8vh;padding-top: 2vh;" v-html="poster4" ref="topAd">
+
+        </div>
+
+        <div ref='ga'></div>
+    </div>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/adManager.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                gameFileName: 'SpaceGunner',
+                gameId: 1009,
+                show: true,
+                show2: false,
+                totalTime: 5,
+                totalTime2: 5,
+                mask: true,
+                poster: "",
+                poster2: "",
+                poster3: "",
+                poster4: "",
+                poster5: "",
+                poster6: "",
+            },
+            methods: {
+                getQueryVariable(variable) {
+                    var query = window.location.search.substring(1);
+                    var vars = query.split("&");
+                    for (var i = 0; i < vars.length; i++) {
+                        var pair = vars[i].split("=");
+                        if (pair[0] == variable) {
+                            return pair[1];
+                        }
+                    }
+                    return (false);
+                },
+                back() {
+                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${this.gameId}`
+                },
+                countDown() {
+                    let clock = setInterval(() => {
+                        this.totalTime--;
+                        this.count = this.totalTime + "s Can be closed";
+                        if (this.totalTime <= 0) {
+                            clearTimeout(clock);
+                            this.count = "Play";
+                            this.show = false
+                            this.show2 = true
+                            this.$refs.down.style.backgroundColor = "green";
+                            setInterval(() => {
+                                this.totalTime2--;
+                                if (this.totalTime2 <= 0) {
+                                    this.show2 = false
+                                    this.mask = false;
+                                }
+                            }, 1000)
+                        }
+                    }, 1000);
+                },
+                close() {
+                    if (this.totalTime == 0) {
+                        this.mask = false;
+                    }
+                },
+                getPoster() {
+                    // 使用广告管理模块插入广告
+                    AdManager.insertAd(this.$refs.poster, 'center');
+                    AdManager.insertAd(this.$refs.topAd, 'banner');
+                },
+                GA() {
+
+                    if (this.gameChannelId * 1 === 1816) {
+                        var GA = 'UA-172839421-29';
+                    }
+                    else if (this.gameChannelId * 1 === 1826) {
+                        var GA = 'UA-172839421-32'
+                    }
+                    else if(this.gameChannelId*1 === 2001){
+                        var GA = 'UA-172839421-57'
+                    }
+                    else {
+                        console.log(this.gameChannelId, 'else -66')
+                        var GA = 'UA-147411722-58';
+                    }
+                    var ele = document.createElement("script");
+                    ele.defer = 'defer'
+                    ele.src = `https://www.googletagmanager.com/gtag/js?id=${GA}`
+                    this.$refs.ga.append(ele);
+                    var ele2 = document.createElement("script");
+                    ele2.innerHTML = `window.dataLayer = window.dataLayer || [];
+                  function gtag() {
+                  dataLayer.push(arguments);
+                                           }
+                  gtag('js', new Date());
+                  gtag('config', '${GA}');`;
+                    this.$refs.ga.append(ele2);
+                }
+            },
+            mounted() {
+                if (this.getQueryVariable('gameId') !== false) {
+                    this.gameId = this.getQueryVariable('gameId') * 1
+                }
+                if (this.getQueryVariable('gameChannelId') !== false) {
+                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                }
+                if (this.getQueryVariable('gameFileName') !== false) {
+                    this.gameFileName = this.getQueryVariable('gameFileName')
+                }
+                this.countDown()
+                this.getPoster()
+                this.GA()
+            }
+        })
+    </script>
+</body>
+
+</html>

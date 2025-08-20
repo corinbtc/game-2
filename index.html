@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Playground</title>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        body {
+            background-color: #7ec9ff;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        #app {
+            max-width: 360px;
+            margin: 0 auto;
+
+            background-color: #7ec9ff;
+        }
+
+        .main {
+            max-width: 340px;
+            margin: 0 auto;
+            margin-top: 80px;
+        }
+
+        .nav {
+            width: 360px;
+            top: 0;
+            height: 60px;
+            /* background-color: #eee; */
+            background-color: #746DFF;
+            text-align: center;
+            font-weight: 600;
+            position: fixed;
+            z-index: 1000;
+            color: #fff;
+        }
+
+        .menu {
+            position: absolute;
+            left: 30px;
+            top: 15px;
+        }
+
+        .menu span {
+            display: block;
+            height: 3px;
+            margin: 5px auto;
+            width: 25px;
+            background-color: #fff;
+        }
+
+        .title {
+            margin-bottom: 20px;
+        }
+
+        .pop {
+            display: flex;
+            text-align: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+
+        }
+
+        .pop-item {
+            margin: 10px;
+            width: 40%;
+            height: 100px;
+            border-radius: 15px;
+            /* background-color: rgba(67, 151, 23, .9); */
+            background-color: #3ca1c7;
+            position: relative;
+        }
+
+        .thum {
+            position: absolute;
+            top: -10px;
+            left: 10px;
+        }
+
+        .pop-item h3 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: #fff;
+            font-size: 16px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .desc {
+            position: absolute;
+            top: 30px;
+            left: 75px;
+            font-size: 12px;
+        }
+
+        .demo {
+            width: 33%;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .hot {
+            margin-top: 30px;
+        }
+
+        .mask {
+            position: fixed;
+            top: 60px;
+            background-color: #2a88bf;
+            width: 120px;
+            z-index: 1000;
+            height: 100vh;
+            /* display: none; */
+        }
+
+        .mask ul {
+            margin-top: 0px;
+        }
+
+        .mask ul li {
+            padding: 15px;
+            /* text-align: right; */
+            border-bottom: 1px dashed #000;
+        }
+
+        .mask ul li img {
+            width: 20px;
+
+            /* text-align: left; */
+        }
+
+        .name {
+            font-size: 14px;
+            color: rgba(71, 74, 79, .87);
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+        }
+
+        .ad_top,
+        .ad_bottom {
+            width: 100%;
+            text-align: center;
+            /* height: 300px; */
+            margin: 10px auto;
+            /* background-color: #fff; */
+        }
+
+        .ad_top>div,
+        .ad_bottom>div {
+            margin: 0 auto;
+        }
+
+        .ad_top>div>div,
+        .ad_bottom>div>div {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="nav">
+            <div class="menu" v-show='hide' @click='menu'>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div v-show='show' @click='close' style="position: absolute;left: 30px;top: 6px; font-size: 35px;">
+                X
+            </div>
+            <h3 style="line-height: 60px;">Poster Playground</h3>
+        </div>
+        <div class="mask" v-show='show'>
+            <ul>
+                <li v-for='(list,index) in typeLists' :key='index' @click='jumpType(list.gameTypeId,list.gameTypeName)'>
+                    <img :src="img[index]" alt="">
+                    {{list.gameTypeName}}
+                </li>
+            </ul>
+        </div>
+        <div class="main">
+            <div class="ad_top" ref="poster" v-html="poster">
+
+            </div>
+            <div class="popular">
+                <div class="title">
+                    <h3>Popular Recommend</h3>
+                </div>
+                <div class="pop">
+                    <div class="pop-item" v-for='(list,index) in RecommendList' :key='index'
+                        @click='jumpResult(list.gameId)'>
+                        <div>
+                            <div class="thum">
+                                <img :src="list.gameLogo" style="border-radius: 10px;border: 2px solid #ff8100;"
+                                    width="60" alt="">
+                                <!-- <img src="https://www.ohplaygames.com/thumbs/space-fighter-80g.png"
+                                    style="border-radius: 10px;border: 2px solid #ff8100;"  width="60" alt=""> -->
+                            </div>
+                            <div class="desc">
+                                <span>{{number(list.gamePlayNumber)}} likes</span>
+                            </div>
+                        </div>
+                        <h3>{{list.gameName}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="ad_bottom" v-html="poster4" ref="topAd">
+
+            </div>
+            <div class="recommend">
+                <div>
+                    <h3>Recommend</h3>
+                </div>
+                <div style="display: flex;flex-wrap: wrap;">
+                    <div class="demo" v-for='(list,index) in popLists' :key='index' @click='jumpResult(list.gameId)'>
+                        <img :src="list.gameLogo" style="border-radius: 10px;border: 2px solid #ff8100;" width="100"
+                            alt="">
+                        <!-- <img src="https://www.ohplaygames.com/thumbs/space-fighter-80g.png" style="border-radius: 10px;"
+                            width="100" alt=""> -->
+                        <div class="name">{{list.gameName}}</div>
+                        <div style="font-size: 14px;">
+                            <span style="color: #f99d00;color: rgb(234 29 29);">{{number(list.gamePlayNumber)}}</span>
+                            <span style="color:#9d9d9d;color: rgb(91 18 208);">likes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hot">
+                <div>
+                    <h3>Hot</h3>
+                </div>
+                <div style="display: flex;flex-wrap: wrap;">
+                    <div class="demo" v-for='(list,index) in hotLists' :key='index' @click='jumpResult(list.gameId)'>
+                        <img :src="list.gameLogo" style="border-radius: 10px;border: 2px solid #ff8100;" width="100"
+                            alt="">
+                        <!-- <img src="https://www.ohplaygames.com/thumbs/space-fighter-80g.png" style="border-radius: 10px;border: 2px solid #ff8100;"
+                            width="100" alt=""> -->
+                        <div class="name">{{list.gameName}}</div>
+                        <div style="font-size: 14px;">
+                            <span style="color: #f99d00;color: rgb(234 29 29);">{{number(list.gamePlayNumber)}}</span>
+                            <span style="color:#9d9d9d;color: rgb(91 18 208);">likes</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">loading...</div>
+            </div>
+        </div>
+        <div ref='ga'></div>
+    </div>
+
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/adManager.js"></script>
+    <script src="./js/next.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                popLists: [],
+                hotLists: [],
+                typeLists: [],
+                RecommendList: [],
+                show: false,
+                hide: true,
+                gameChannelId: 1816,
+                limit: 9,
+                img: [
+                    './img/hot.png',
+                    './img/new.png',
+                    './img/action.png',
+                    './img/kids.png',
+                    './img/card.png',
+                    './img/sports.png',
+                    './img/adventure.png',
+                    './img/puzzle.png',
+                    './img/beauty.png',
+                    './img/strategy.png',
+                    './img/football.png'
+                ],
+                poster: "",
+                poster2: "",
+                poster3: "",
+                poster4: "",
+                poster5: "",
+                poster6: "",
+                
+            },
+            methods: {
+                getRecommend() {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/SelectGameByGameType',
+                        data: {
+                            gameWebsiteName: "www.92onegame.com",
+                            limit: 4,
+                            page: 10,
+                        }
+                    }).then((res) => {
+                        // console.log(res);
+                        console.log(res.data.data);
+                        this.RecommendList = res.data.data
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                },
+                getPoP() {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/SelectGameByGameType',
+                        data: {
+                            gameWebsiteName: "www.92onegame.com",
+                            limit: 6,
+                            page: 8,
+                        }
+                    }).then((res) => {
+                        // console.log(res);
+                        // console.log(res.data.data);
+                        this.popLists = res.data.data
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                },
+                getQueryVariable(variable) {
+                    var query = window.location.search.substring(1);
+                    var vars = query.split("&");
+                    for (var i = 0; i < vars.length; i++) {
+                        var pair = vars[i].split("=");
+                        if (pair[0] == variable) {
+                            return pair[1];
+                        }
+                    }
+                    return (false);
+                },
+                getHotGame() {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/index',
+                        data: {
+                            gameWebsiteName: "www.92onegame.com",
+                            limit: this.limit,
+                            page: 1,
+                        }
+                    }).then((res) => {
+                        // console.log(res);
+                        // console.log(res.data.data);
+                        this.hotLists = res.data.data
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                },
+                getTypeGame(gameTypeId) {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/SelectGameByGameType',
+                        data: {
+                            gameTypeId: gameTypeId || 11,
+                            gameWebsiteName: "www.92onegame.com",
+                            limit: 10,
+                            page: 1,
+                        }
+                    }).then(res => {
+                        console.log(res);
+                        this.lists = res.data.data
+                    })
+                },
+                getTypeName() {
+                    // 直接使用硬编码数据
+                    const mockData = {
+                        "code": 0,
+                        "msg": "操作成功",
+                        "count": 0,
+                        "data": [
+                            {
+                                "gameTypeId": 10,
+                                "gameTypeName": "Hot",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 5,
+                                "gameTypeName": "New",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 8,
+                                "gameTypeName": "Action",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 6,
+                                "gameTypeName": "Kids",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 9,
+                                "gameTypeName": "Card",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 4,
+                                "gameTypeName": "Sports",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 2,
+                                "gameTypeName": "Puzzle",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 1,
+                                "gameTypeName": "Beauty",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 12,
+                                "gameTypeName": "Strategy",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 13,
+                                "gameTypeName": "Football",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 14,
+                                "gameTypeName": "Best",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 15,
+                                "gameTypeName": "Home",
+                                "gameListIndexVos": null
+                            },
+                            {
+                                "gameTypeId": 16,
+                                "gameTypeName": "Unity3d",
+                                "gameListIndexVos": null
+                            }
+                        ]
+                    };
+                    console.log(mockData);
+                    this.typeLists = mockData.data;
+                },
+                number(num) {
+                    num = num * 1;
+                    return num >= 1e3 ? (num / 1e3).toFixed(1) + "k" : num >= 1e4;
+                },
+
+                jumpResult(gameId) {
+                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${gameId}`
+
+                },
+                menu() {
+                    this.show = !this.show
+                    this.hide = !this.hide
+                },
+                close() {
+                    this.show = !this.show
+                    this.hide = !this.hide
+                },
+                jumpType(gameTypeId, gameTypeName) {
+                    location.href = `type.html?gameChannelId=${this.gameChannelId}&gameTypeId=${gameTypeId}&gameTypeName=${gameTypeName}`
+
+                },
+                handleScroll() {
+
+                    let scrolltop = document.documentElement.scrollTop || document.body.scrollTop;
+                    let b = document.body.clientHeight
+
+                    if (((window.screen.height + document.documentElement.scrollTop) > (document.body.clientHeight))) {
+                        this.limit += 9
+                        this.getHotGame()
+                    }
+                },
+
+
+
+                han: Debounce(function () {
+                    // console.log(123);
+                    this.handleScroll()
+                }, 1000),
+                getPoster() {
+                    // 使用广告管理模块插入广告
+                    AdManager.insertAd(this.$refs.poster, 'top');
+                    AdManager.insertAd(this.$refs.topAd, 'bottom');
+                },
+                GA() {
+
+                    if (this.gameChannelId * 1 === 1816) {
+                        var GA = 'UA-172839421-29';
+                    }
+                    else if(this.gameChannelId*1 === 1826){
+                        var GA = 'UA-172839421-32'
+                    }
+                    else if(this.gameChannelId*1 === 2001){
+                        var GA = 'UA-172839421-57'
+                    }
+                    else {
+                        console.log(this.gameChannelId, 'else -66')
+                        var GA = 'UA-147411722-58';
+                    }
+                    var ele = document.createElement("script");
+                    ele.defer = 'defer'
+                    ele.src = `https://www.googletagmanager.com/gtag/js?id=${GA}`
+                    this.$refs.ga.append(ele);
+                    var ele2 = document.createElement("script");
+                    ele2.innerHTML = `window.dataLayer = window.dataLayer || [];
+                  function gtag() {
+                  dataLayer.push(arguments);
+                                           }
+                  gtag('js', new Date());
+                  gtag('config', '${GA}');`;
+                    this.$refs.ga.append(ele2);
+                }
+
+            },
+            mounted() {
+                window.addEventListener("scroll", this.han)
+                if (this.getQueryVariable('gameChannelId') !== false) {
+                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                }
+                this.getPoP()
+                this.getHotGame()
+                this.getTypeName()
+                this.getRecommend()
+                this.getPoster()
+                // this.getTypeGame()
+                this.GA()
+            }
+        })
+    </script>
+</body>
+
+</html>

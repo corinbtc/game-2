@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster Playground</title>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        .demo {
+            width: 33%;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .name {
+            font-size: 14px;
+            color: rgba(71, 74, 79, .87);
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+        }
+
+        .nav {
+            background-color: #eee;
+        }
+
+        .nav img {
+            width: 30px;
+            position: absolute;
+            left: 10px;
+            top: 15px;
+        }
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app" v-cloak>
+        <div class="nav" @click='back'>
+            <img src="./img/home.webp" alt="">
+            <h3 style="line-height: 60px;text-align: center;">{{gameTypeName}}</h3>
+        </div>
+        <div class="ad_top" ref="poster" v-html="poster">
+
+        </div>
+        <div style="display: flex;flex-wrap: wrap;">
+            <div class="demo" v-for='(list,index) in gameList' :key='index' @click='jumpResult(list.gameId)'>
+                <img :src="list.gameLogo" style="border-radius: 10px;" width="100" alt="">
+                <!-- <img src="https://www.ohplaygames.com/thumbs/space-fighter-80g.png" style="border-radius: 10px;"
+                    width="100" alt=""> -->
+                <div class="name">{{list.gameName}}</div>
+                <div style="font-size: 14px;">
+                    <span style="color: #f99d00;">{{number(list.gamePlayNumber)}}</span>
+                    <span style="color:#9d9d9d">Play</span>
+                </div>
+            </div>
+            
+        </div>
+        <div style="text-align: center;">loading...</div>
+        <div class="ad_bottom" v-html="poster4" ref="topAd">
+
+        </div>
+        <div ref='ga'></div>
+    </div>
+
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script src="./js/adManager.js"></script>
+    <script src="./js/next.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                gameTypeId: 1,
+                gameList: [],
+                gameTypeName: '',
+                gameChannelId: 1816,
+                limit: 30,
+                poster: "",
+                poster2: "",
+                poster3: "",
+                poster4: "",
+                poster5: "",
+                poster6: "",
+            },
+            methods: {
+                getGame() {
+                    axios({
+                        method: 'post',
+                        url: 'https://www.migame.vip/gamefront/gameList/SelectGameByGameType',
+                        data: {
+                            gameWebsiteName: "www.92onegame.com",
+                            limit: this.limit,
+                            page: 1,
+                            gameTypeId: this.gameTypeId
+                        }
+                    }).then((res) => {
+                        console.log(res);
+                        console.log(res.data.data);
+                        this.gameList = res.data.data
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                },
+                getQueryVariable(variable) {
+                    var query = window.location.search.substring(1);
+                    var vars = query.split("&");
+                    for (var i = 0; i < vars.length; i++) {
+                        var pair = vars[i].split("=");
+                        if (pair[0] == variable) {
+                            return pair[1];
+                        }
+                    }
+                    return (false);
+                },
+                number(num) {
+                    num = num * 1;
+                    return num >= 1e3 ? (num / 1e3).toFixed(1) + "k" : num >= 1e4;
+                },
+                back() {
+                    location.href = `index.html?gameChannelId=${this.gameChannelId}`
+
+                },
+                jumpResult(gameId) {
+                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${gameId}`
+
+                },
+                handleScroll() {
+                    let scrolltop = document.documentElement.scrollTop || document.body.scrollTop;
+                    let b = document.body.clientHeight
+                    // console.log(window.screen.height);
+                    //     console.log(document.documentElement.scrollTop);
+                    //     console.log(document.body.clientHeight);
+                    if (((window.screen.height + document.documentElement.scrollTop) === (document.body.clientHeight))) {
+                        console.log(window.screen.height);
+                        console.log(document.documentElement.scrollTop);
+                        console.log(document.body.clientHeight);
+                        // console.log(1);
+                        this.limit += 9
+                        this.getGame()
+                    }
+                },
+
+                han: Debounce(function () {
+                    console.log(123);
+                    this.handleScroll()
+                }, 1000),
+                getPoster() {
+                    // 使用广告管理模块插入广告
+                    AdManager.insertAd(this.$refs.poster, 'top');
+                    AdManager.insertAd(this.$refs.topAd, 'bottom');
+                },
+                GA() {
+
+                    if (this.gameChannelId * 1 === 1816) {
+                        var GA = 'UA-172839421-29';
+                    }
+                    else if(this.gameChannelId*1 === 1826){
+                        var GA = 'UA-172839421-32'
+                    }
+                    else if(this.gameChannelId*1 === 2001){
+                        var GA = 'UA-172839421-57'
+                    }
+                    else {
+                        console.log(this.gameChannelId, 'else -66')
+                        var GA = 'UA-147411722-58';
+                    }
+                    var ele = document.createElement("script");
+                    ele.defer = 'defer'
+                    ele.src = `https://www.googletagmanager.com/gtag/js?id=${GA}`
+                    this.$refs.ga.append(ele);
+                    var ele2 = document.createElement("script");
+                    ele2.innerHTML = `window.dataLayer = window.dataLayer || [];
+                  function gtag() {
+                  dataLayer.push(arguments);
+                                           }
+                  gtag('js', new Date());
+                  gtag('config', '${GA}');`;
+                    this.$refs.ga.append(ele2);
+                }
+            },
+            mounted() {
+                window.addEventListener("scroll", this.han)
+                if (this.getQueryVariable('gameChannelId') !== false) {
+                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                }
+                if (this.getQueryVariable('gameTypeId') !== false) {
+                    this.gameTypeId = this.getQueryVariable('gameTypeId') * 1
+                }
+                if (this.getQueryVariable('gameTypeId') !== false) {
+                    this.gameTypeName = this.getQueryVariable('gameTypeName')
+                }
+                this.getGame()
+                this.getPoster()
+                this.GA()
+            }
+        })
+    </script>
+    
+</body>
+
+</html>
