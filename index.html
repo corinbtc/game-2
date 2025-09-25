@@ -283,7 +283,7 @@
                 RecommendList: [],
                 show: false,
                 hide: true,
-                gameChannelId: 101,
+                channelId: 101,
                 limit: 9,
                 img: [
                     './img/hot.png',
@@ -467,7 +467,7 @@
                 },
 
                 jumpResult(gameId) {
-                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${gameId}`
+                    location.href = `template.html?channelId=${this.channelId}&gameId=${gameId}`
 
                 },
                 menu() {
@@ -479,7 +479,7 @@
                     this.hide = !this.hide
                 },
                 jumpType(gameTypeId, gameTypeName) {
-                    location.href = `type.html?gameChannelId=${this.gameChannelId}&gameTypeId=${gameTypeId}&gameTypeName=${gameTypeName}`
+                    location.href = `type.html?channelId=${this.channelId}&gameTypeId=${gameTypeId}&gameTypeName=${gameTypeName}`
 
                 },
                 handleScroll() {
@@ -507,7 +507,7 @@
                 GA() {
 
                     var GA = 'G-8ERSF8XSTJ';
-                    if (this.gameChannelId * 1 === 101) {
+                    if (this.channelId * 1 === 101) {
                         GA = 'G-8ERSF8XSTJ';
                     }
                     var ele = document.createElement("script");
@@ -527,8 +527,8 @@
             },
             mounted() {
                 window.addEventListener("scroll", this.han)
-                if (this.getQueryVariable('gameChannelId') !== false) {
-                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                if (this.getQueryVariable('channelId') !== false) {
+                    this.channelId = this.getQueryVariable('channelId') * 1
                 }
                 this.getPoP()
                 this.getHotGame()

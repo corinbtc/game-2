@@ -141,7 +141,7 @@
                     return (false);
                 },
                 back() {
-                    location.href = `template.html?gameChannelId=${this.gameChannelId}&gameId=${this.gameId}`
+                    location.href = `template.html?channelId=${this.channelId}&gameId=${this.gameId}`
                 },
                 countDown() {
                     let clock = setInterval(() => {
@@ -176,7 +176,7 @@
                 GA() {
 
                     var GA = 'G-8ERSF8XSTJ';
-                    if (this.gameChannelId * 1 === 101) {
+                    if (this.channelId * 1 === 101) {
                         GA = 'G-8ERSF8XSTJ';
                     }
                     var ele = document.createElement("script");
@@ -197,8 +197,8 @@
                 if (this.getQueryVariable('gameId') !== false) {
                     this.gameId = this.getQueryVariable('gameId') * 1
                 }
-                if (this.getQueryVariable('gameChannelId') !== false) {
-                    this.gameChannelId = this.getQueryVariable('gameChannelId') * 1
+                if (this.getQueryVariable('channelId') !== false) {
+                    this.channelId = this.getQueryVariable('channelId') * 1
                 }
                 if (this.getQueryVariable('gameFileName') !== false) {
                     this.gameFileName = this.getQueryVariable('gameFileName')
